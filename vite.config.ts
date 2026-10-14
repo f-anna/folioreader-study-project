@@ -44,5 +44,10 @@ export default defineConfig(() => ({
       // 3. tell Vite to ignore watching `src-tauri`
       ignored: ["**/src-tauri/**"],
     },
+    // 4. forward WebView console errors/warnings and debug logs (e.g. [soundtrack]) to the terminal
+    forwardConsole: {
+      unhandledErrors: true,
+      logLevels: ["error", "warn", "debug"],
+    },
   },
 }));
