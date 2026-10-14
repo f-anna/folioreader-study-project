@@ -23,7 +23,8 @@
     "qrcode": "^1.5.4",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "react-router-dom": "^7.18.4"
+    "react-router-dom": "^7.18.4",
+    "tauri-plugin-soundtrack-api": "file:../../crates/tauri-plugin-soundtrack"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.12.0",

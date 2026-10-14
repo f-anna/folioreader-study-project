@@ -15,6 +15,11 @@ const appVersion = String(rawVersion).replace(/^v/, "");
 // https://vite.dev/config/
 export default defineConfig(() => ({
   plugins: [react()],
+  // tauri-plugin-soundtrack-api lives outside this project (../../crates); resolve its
+  // @tauri-apps/api import from here so there is a single copy
+  resolve: {
+    dedupe: ["@tauri-apps/api"],
+  },
 
   define: {
     __APP_VERSION__: JSON.stringify(appVersion),
