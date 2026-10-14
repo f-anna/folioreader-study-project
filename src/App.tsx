@@ -25,7 +25,6 @@ import { useBackHandler } from './services/backHandler';
 import { SplashScreen } from './components/common/SplashScreen';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { DialogProvider, useDialog } from './context/DialogContext';
-import { ReadingContextProvider } from './context/ReadingContext';
 import { I18nProvider, useTranslation } from './i18n';
 import { APP_VERSION, BUILD_TIME } from './constants/buildInfo';
 import { checkForUpdates, isDevVersion, isUpdateDismissed, initUpdateCheckerKv, UpdateInfo } from './services/updateChecker';
@@ -367,21 +366,19 @@ function AppRoutes() {
   if (activeBook) {
     return (
       <div className={`app-container theme-${settings.theme}`}>
-        <ReadingContextProvider bookId={activeBook.id}>
-          <ErrorBoundary
-            fallbackTitle="Failed to open book"
-            fallbackMessage="An error occurred while loading this e-book. You can return to your library and try opening another book."
-            onReset={handleBackToLibrary}
-          >
-            <FoliateReader
-              bookId={activeBook.id}
-              bookSource={activeBook.source}
-              settings={settings}
-              onUpdateSettings={handleUpdateSettings}
-              onBackToLibrary={handleBackToLibrary}
-            />
-          </ErrorBoundary>
-        </ReadingContextProvider>
+        <ErrorBoundary
+          fallbackTitle="Failed to open book"
+          fallbackMessage="An error occurred while loading this e-book. You can return to your library and try opening another book."
+          onReset={handleBackToLibrary}
+        >
+          <FoliateReader
+            bookId={activeBook.id}
+            bookSource={activeBook.source}
+            settings={settings}
+            onUpdateSettings={handleUpdateSettings}
+            onBackToLibrary={handleBackToLibrary}
+          />
+        </ErrorBoundary>
       </div>
     );
   }
