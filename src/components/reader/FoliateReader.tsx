@@ -53,6 +53,7 @@ import { LoadedCustomFont } from '../../types/font';
 import { useTranslation } from '../../i18n';
 import { DevicePaginator, DevicePageInfo } from '../../services/devicePaginator';
 import { useReadingTracker } from '../../services/useReadingTracker';
+import { useReadingContext } from '../../context/ReadingContext';
 
 interface FoliateReaderProps {
   bookId: string;
@@ -366,6 +367,7 @@ export const FoliateReader: React.FC<FoliateReaderProps> = ({
   const [sectionFractions, setSectionFractions] = useState<number[]>([]);
   const [currentCFI, setCurrentCFI] = useState<string>('');
   const paginatorRef = useRef<DevicePaginator | null>(null);
+  const { updateLocation } = useReadingContext();
 
   const { stats: readingStats, recordPageTurn, refreshStats, flushSession } = useReadingTracker({
     bookId,
@@ -1146,6 +1148,19 @@ export const FoliateReader: React.FC<FoliateReaderProps> = ({
         const sectionIndex = detail.index ?? detail.section?.current ?? 0;
         const page = detail.page ?? 1;
         const pages = detail.pages ?? 3;
+
+        updateLocation({
+          chapter: detail.tocItem
+            ? { href: detail.tocItem.href, label: detail.tocItem.label || '' }
+            : null,
+          href: detail.tocItem?.href ?? null,
+          cfi: detail.cfi ?? null,
+          fraction,
+          sectionIndex,
+          page,
+          pages,
+          visibleText: detail.range?.toString?.().trim() || '',
+        });
 
         paginatorRef.current?.updateLiveSection(sectionIndex, page, pages);
 

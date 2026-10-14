@@ -25,6 +25,7 @@ import { useBackHandler } from './services/backHandler';
 import { SplashScreen } from './components/common/SplashScreen';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { DialogProvider, useDialog } from './context/DialogContext';
+import { ReadingContextProvider } from './context/ReadingContext';
 import { I18nProvider, useTranslation } from './i18n';
 import { APP_VERSION, BUILD_TIME } from './constants/buildInfo';
 import { checkForUpdates, isDevVersion, isUpdateDismissed, initUpdateCheckerKv, UpdateInfo } from './services/updateChecker';
@@ -366,19 +367,21 @@ function AppRoutes() {
   if (activeBook) {
     return (
       <div className={`app-container theme-${settings.theme}`}>
-        <ErrorBoundary
-          fallbackTitle="Failed to open book"
-          fallbackMessage="An error occurred while loading this e-book. You can return to your library and try opening another book."
-          onReset={handleBackToLibrary}
-        >
-          <FoliateReader
-            bookId={activeBook.id}
-            bookSource={activeBook.source}
-            settings={settings}
-            onUpdateSettings={handleUpdateSettings}
-            onBackToLibrary={handleBackToLibrary}
-          />
-        </ErrorBoundary>
+        <ReadingContextProvider bookId={activeBook.id}>
+          <ErrorBoundary
+            fallbackTitle="Failed to open book"
+            fallbackMessage="An error occurred while loading this e-book. You can return to your library and try opening another book."
+            onReset={handleBackToLibrary}
+          >
+            <FoliateReader
+              bookId={activeBook.id}
+              bookSource={activeBook.source}
+              settings={settings}
+              onUpdateSettings={handleUpdateSettings}
+              onBackToLibrary={handleBackToLibrary}
+            />
+          </ErrorBoundary>
+        </ReadingContextProvider>
       </div>
     );
   }
@@ -429,28 +432,26 @@ function AppRoutes() {
         <Route
           path="/"
           element={
-            <RequireAuth theme={settings.theme}>
-              {currentView === 'browse' ? (
-                <BrowseView
-                  settings={settings}
-                  onBackToLocalLibrary={() => setCurrentView('library')}
-                  onOpenBookFromPath={handleOpenBookFromPath}
-                  onBookDownloaded={() => {
-                    loadRecentBooksAsync().catch(console.warn);
-                  }}
-                  onUpdateSettings={handleUpdateSettings}
-                />
-              ) : (
-                <LibraryView
-                  settings={settings}
-                  onOpenLocalBook={handleOpenLocalBook}
-                  onOpenBrowse={() => setCurrentView('browse')}
-                  onOpenSettings={() => setIsSettingsModalOpen(true)}
-                  onOpenProfile={handleOpenProfile}
-                  onUpdateSettings={handleUpdateSettings}
-                />
-              )}
-            </RequireAuth>
+            currentView === 'browse' ? (
+              <BrowseView
+                settings={settings}
+                onBackToLocalLibrary={() => setCurrentView('library')}
+                onOpenBookFromPath={handleOpenBookFromPath}
+                onBookDownloaded={() => {
+                  loadRecentBooksAsync().catch(console.warn);
+                }}
+                onUpdateSettings={handleUpdateSettings}
+              />
+            ) : (
+              <LibraryView
+                settings={settings}
+                onOpenLocalBook={handleOpenLocalBook}
+                onOpenBrowse={() => setCurrentView('browse')}
+                onOpenSettings={() => setIsSettingsModalOpen(true)}
+                onOpenProfile={handleOpenProfile}
+                onUpdateSettings={handleUpdateSettings}
+              />
+            )
           }
         />
 
