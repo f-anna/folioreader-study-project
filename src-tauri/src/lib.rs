@@ -47,6 +47,7 @@ pub fn run() {
     builder
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_http::init())
+        .plugin(tauri_plugin_soundtrack::init())
         .setup(|app| {
             let app_handle = app.handle();
             let base_dir = get_app_base_dir(app_handle).unwrap_or_else(|_| PathBuf::from("."));
