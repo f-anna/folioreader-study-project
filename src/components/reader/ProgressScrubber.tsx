@@ -51,6 +51,7 @@ export const ProgressScrubber: React.FC<ProgressScrubberProps> = ({
 
   const isDraggingRef = React.useRef(false);
   const dragFractionRef = React.useRef<number | null>(null);
+  const sliderRef = React.useRef<HTMLInputElement>(null);
   isDraggingRef.current = isDragging;
   dragFractionRef.current = dragFraction;
 
@@ -70,6 +71,7 @@ export const ProgressScrubber: React.FC<ProgressScrubberProps> = ({
     const handleGlobalPointerUp = () => {
       if (isDraggingRef.current && dragFractionRef.current !== null) {
         commitSeek(dragFractionRef.current);
+        sliderRef.current?.blur();
       }
     };
 
@@ -146,6 +148,7 @@ export const ProgressScrubber: React.FC<ProgressScrubberProps> = ({
       <div className="footer-scrubber-center">
         <div className="scrubber-slider-wrap">
           <input
+            ref={sliderRef}
             type="range"
             min={0}
             max={1}
@@ -173,6 +176,8 @@ export const ProgressScrubber: React.FC<ProgressScrubberProps> = ({
               } else {
                 commitSeek(parseFloat(e.currentTarget.value));
               }
+              // Otherwise the slider keeps focus and swallows the arrow keys meant for page turns
+              e.currentTarget.blur();
             }}
             onTouchEnd={() => {
               if (isDraggingRef.current && dragFractionRef.current !== null) {
